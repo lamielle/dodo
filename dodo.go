@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"sort"
 
 	"github.com/ChimeraCoder/anaconda"
@@ -34,11 +35,48 @@ func sortMapByValue(m map[string]int) PairList {
 }
 
 func main() {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", func(rw http.ResponseWriter, req *http.Request) {
+		rw.Write([]byte("Works!"))
+	})
+	fmt.Println("Dodo!")
+	//err := http.ListenAndServe("", mux)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//	return
+
+	// Set application key and secret
 	anaconda.SetConsumerKey("")
 	anaconda.SetConsumerSecret("")
+
+	// Request an auth token
+	url, creds, err := anaconda.AuthorizationURL("http://localhost:8080/testing")
+	pretty.Println("url", url)
+	pretty.Println("creds", creds)
+	pretty.Println("err", err)
+	if err != nil {
+		panic(err)
+	}
+
+	var verifier string
+	n, err := fmt.Scanln(&verifier)
+	if err != nil {
+		panic(err)
+	}
+	pretty.Println("read n=%s", n)
+
+	creds2, values, err := anaconda.GetCredentials(creds, verifier)
+	pretty.Println("creds2", creds2)
+	pretty.Println("values", values)
+	pretty.Println("err", err)
+	if err != nil {
+		panic(err)
+	}
+
 	api := anaconda.NewTwitterApi(
-		"",
-		"")
+		creds2.Token,
+		creds2.Secret)
 
 	tweets, err := api.GetHomeTimeline(map[string][]string{"count": {"200"}})
 
