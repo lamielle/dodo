@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"sort"
 
 	"github.com/ChimeraCoder/anaconda"
@@ -46,9 +47,16 @@ func main() {
 	//}
 	//	return
 
+	dodo_key := os.Getenv("DODO_KEY")
+	dodo_secret := os.Getenv("DODO_SECRET")
+
+	if len(dodo_key) == 0 || len(dodo_secret) == 0 {
+		panic("Must set DODO_KEY and DODO_SECRET env vars")
+	}
+
 	// Set application key and secret
-	anaconda.SetConsumerKey("")
-	anaconda.SetConsumerSecret("")
+	anaconda.SetConsumerKey(dodo_key)
+	anaconda.SetConsumerSecret(dodo_secret)
 
 	// Request an auth token
 	url, creds, err := anaconda.AuthorizationURL("http://localhost:8080/testing")
