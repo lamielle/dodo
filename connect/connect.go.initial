@@ -1,0 +1,48 @@
+package connect
+
+// 1 2 3
+// 4 5 6
+// 7 8 9
+//   0
+
+// nums is a 10 x 10 adjacency matrix that represents the connectivity of the numbers of a phone's dial pad.
+var adj int[]={{0,0,0,0,0,0,0,1,0,0}, // 0
+              {0,0,1,0,1,0,0,0,0,0}, // 1
+              {0,1,0,1,0,1,0,0,0,0}, // 2
+              {0,0,1,0,0,0,1,0,0,0}, // 3
+              {0,1,0,0,0,1,0,1,0,0}, // 4
+              {0,0,0,0,0,0,0,0,0,0}, // 5
+              {0,0,0,0,0,0,0,0,0,0}, // 6
+              {0,0,0,0,0,0,0,0,0,0}, // 7
+              {0,0,0,0,0,0,0,0,0,0}, // 8
+              {0,0,0,0,0,0,0,0,0,0}, // 9
+          }
+
+func connected(digits string) bool {
+  nums := int[]{}
+  for _,digit := range(digits) {
+    num,err:= fmt.Atoi(digit)
+    if err != nil {
+      return false
+    }
+    if num < 0 || num > 9 {
+      return false
+    }
+    nums=append(num,nums)
+  }
+  if 0==len(nums) return true
+  curr := nums[0]
+  for _,num := range(nums) {
+    if adj[curr][num] == 0 {
+      return false
+    }
+    curr = num
+  }
+  return true
+}
+
+func main() {
+  fmt.Println("empty string: ", connected(""))
+  fmt.Println("1: ", connected(""))
+  fmt.Println("1234: ", connected("1234"))
+}
